@@ -52,7 +52,13 @@
     );
 @endphp
 
-<div {{ $attributes->class(['fi-in-entry-wrp']) }}>
+<div
+    {{
+        $attributes
+            ->merge($entry?->getExtraEntryWrapperAttributes() ?? [])
+            ->class(['fi-in-entry-wrp'])
+    }}
+>
     @if ($label && $labelSrOnly)
         <dt class="sr-only">
             {{ $label }}
@@ -95,7 +101,7 @@
 
         <div
             @class([
-                'grid gap-y-2',
+                'grid auto-cols-fr gap-y-2',
                 'sm:col-span-2' => $hasInlineLabel,
             ])
         >

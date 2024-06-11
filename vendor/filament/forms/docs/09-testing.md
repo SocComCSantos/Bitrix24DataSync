@@ -45,6 +45,32 @@ it('can automatically generate a slug from the title', function () {
 
 > If you have multiple forms on a Livewire component, you can specify which form you want to check using `assertFormSet([...], 'createPostForm')`.
 
+You may also find it useful to pass a function to the `assertFormSet()` method, which allows you to access the form `$state` and perform additional assertions:
+
+```php
+use Illuminate\Support\Str;
+use function Pest\Livewire\livewire;
+
+it('can automatically generate a slug from the title without any spaces', function () {
+    $title = fake()->sentence();
+
+    livewire(CreatePost::class)
+        ->fillForm([
+            'title' => $title,
+        ])
+        ->assertFormSet(function (array $state): array {
+            expect($state['slug'])
+                ->not->toContain(' ');
+                
+            return [
+                'slug' => Str::slug($title),
+            ];
+        });
+});
+```
+
+You can return an array from the function if you want Filament to continue to assert the form state after the function has been run.
+
 ## Validation
 
 Use `assertHasFormErrors()` to ensure that data is properly validated in a form:
@@ -172,6 +198,47 @@ test('title is disabled', function () {
 ```
 
 > For both `assertFormFieldIsEnabled()` and `assertFormFieldIsDisabled()` you can pass the name of a specific form the field belongs to as the second argument like `assertFormFieldIsEnabled('title', 'createPostForm')`.
+
+## Layout components
+
+If you need to check if a particular layout component exists rather than a field, you may use `assertFormComponentExists()`.  As layout components do not have names, this method uses the `key()` provided by the developer:
+
+```php
+use Filament\Forms\Components\Section;
+
+Section::make('Comments')
+    ->key('comments-section')
+    ->schema([
+        //
+    ])
+```
+
+```php
+use function Pest\Livewire\livewire;
+
+test('comments section exists' function () {
+    livewire(EditPost::class)
+        ->assertFormComponentExists('comments-section');
+});
+```
+
+To check if the component exists and passes a given truth test, you can pass a function to the second argument of `assertFormComponentExists()`, returning true or false if the component passes the test or not:
+
+```php
+use Filament\Forms\Components\Component;
+
+use function Pest\Livewire\livewire;
+
+test('comments section has heading' function () {
+    livewire(EditPost::class)
+        ->assertFormComponentExists(
+            'comments-section',
+            function (Component $component): bool {
+                return $component->getHeading() === 'Comments';
+            },
+        );
+});
+```
 
 ## Actions
 
