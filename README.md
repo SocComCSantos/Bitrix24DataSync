@@ -1,5 +1,7 @@
 # Bitrix24DataSync
 
+### Settings for local access
+
 ## Step 1 - Configure
 First, make a copy of the example environment configuration file by running the following command:
 ```bash
@@ -23,4 +25,19 @@ This command allows you to interact with the container for any specific tasks yo
 ## Step 4 - Configuration and Dependencies
 Ensure that your application is properly configured and has all the required dependencies. Execute the following commands one by one:
 ```bash
-chmod -R 777 storage && chmod -R 777 bootstrap && php artisan migrate --seed && php artisan storage:link && php artisan queue:work
+chmod -R 777 storage && php artisan key:generate && php artisan migrate --seed && rm -rf public/storage && php artisan storage:link && php artisan queue:work
+```
+
+## Step 5 - Access dashboard
+URL
+```bash
+http://localhost/
+```
+Mail
+```bash
+test@example.com
+```
+Pass
+```bash
+123
+```

@@ -55,7 +55,8 @@ class ListingResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('bitrix')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado')
                     ->dateTime()
